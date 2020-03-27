@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RestaurantRequest;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
-use App\Models\Restaurant;
+use App\User;
 
-class RestaurantController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +16,8 @@ class RestaurantController extends Controller
      */
     public function index()
     {
-        $restaurants = Restaurant::all();
-
-        return view('admin.restaurants.index', compact('restaurants'));
-
+        $users = User::all();
+        return view('admin.users.index', compact('users'));
     }
 
     /**
@@ -29,7 +27,7 @@ class RestaurantController extends Controller
      */
     public function create()
     {
-        return view('admin.restaurants.store');
+        return view('admin.users.store');
     }
 
     /**
@@ -38,19 +36,21 @@ class RestaurantController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(RestaurantRequest $request)
+    public function store(UserRequest $request)
     {
         $data = $request->all();
 
          $request->validated();
 
-        $restaurant = new Restaurant();
+         $data['password'] = bcrypt( $data['password']);
 
-        $restaurant->create($data);
+        $user = new User();
 
-        flash('Restaurante criado com sucesso!')->success();
+        $user->create($data);
 
-        return redirect()->route('restaurants.index');
+        flash('Usuario criado com sucesso!')->success();
+
+        return redirect()->route('users.index');
 
     }
 
@@ -72,8 +72,8 @@ class RestaurantController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    public function edit(Restaurant $restaurant){
-        return view('admin.restaurants.edit', compact('restaurant'));
+    public function edit(User $user){
+        return view('admin.Users.edit', compact('user'));
     }
 
     /**
@@ -83,19 +83,23 @@ class RestaurantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(RestaurantRequest $request, $id)
+    public function update(UserRequest $request, $id)
     {
         $data = $request->all();
 
         $request->validated();
 
-        $restaurant =  Restaurant::findOrFail($id);
+        if($data['password']){
+            $data['password'] = bcrypt( $data['password']);
+        }
 
-        $restaurant->update($data);
+        $user =  User::findOrFail($id);
 
-        flash('Restaurante alterado com sucesso!')->success();
+        $user->update($data);
 
-        return redirect()->route('restaurant.edit',['restaurant'=>$id]);
+        flash('Usuario alterado com sucesso!')->success();
+
+        return redirect()->route('user.edit',['user'=>$id]);
     }
 
     /**
@@ -106,13 +110,12 @@ class RestaurantController extends Controller
      */
     public function destroy($id)
     {
-        $restaurant =  Restaurant::findOrFail($id);
+        $user =  User::findOrFail($id);
 
-        $restaurant->delete();
+        $user->delete();
+        flash('Usuario delete com sucesso!')->success();
 
-        flash('Restaurante delete com sucesso!')->success();
-
-        return redirect()->route('restaurants.index');
+        return redirect()->route('users.index');
     }
 
 }

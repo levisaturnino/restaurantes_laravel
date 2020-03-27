@@ -34,9 +34,9 @@ class RestaurantRequest extends FormRequest
     public function messages()
     {
         return [
-            "name.required"=>"Campo nome é obritório",
-            "description.required"=>"Campo descrição é obritório",
-            "address.required"=>"Campo endereço é obritório",
+            "name.required"=>"Campo nome é obrigatório",
+            "description.required"=>"Campo descrição é obrigatório",
+            "address.required"=>"Campo endereço é obritgaório",
             "*.min"=>"No mínimo 5 caracteres"
 
         ];
